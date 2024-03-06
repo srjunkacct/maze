@@ -37,6 +37,29 @@ class Policy:
             delta, newValueMap = self.evaluateOnce(newValueMap)
         return newValueMap
 
+    def revisePolicy(self, valueMap):
+        delta = 0.0
+        revisedPolicyMap = {}
+        for key in valueMap.keys():
+            if key in self.maze.goal:
+                revisedPolicyMap[key] = None
+                continue
+            validActions = self.maze.getLegalActions(key)
+            actionOutcomes = [ action.act(key) for action in validActions ]
+            actionValues = [ outcome[1] + valueMap[outcome[0]] for outcome in actionOutcomes ]
+            bestActionValue = max(actionValues)
+            bestIndex = actionValues.index(bestActionValue)
+            bestActions = [ action for action in validActions if abs( (action.act(key))[1] + valueMap[(action.act(key))[0]] - bestActionValue )  < 0.001 ]
+            numBestActions = len(bestActions)
+            probability = 1.0 / numBestActions
+            policy = {}
+            for action in bestActions:
+                policy[action] = probability
+                delta = max( delta, abs( valueMap[key] - bestActionValue ))
+            revisedPolicyMap[key] = policy
+        return Policy( self.maze, revisedPolicyMap ), delta
+
+
 
 
 

@@ -12,5 +12,8 @@ class Key:
         if self.col == other.col:
             return True
 
+    def __str__(self):
+        return f"({self.row},{self.col})"
+
     def __hash__(self):
         return self.row * 24601 * self.col

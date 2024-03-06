@@ -7,5 +7,8 @@ class Action:
         self.deltaRow = deltaRow
         self.deltaCol = deltaCol
 
+    def __str__(self):
+        return f"({self.deltaRow},{self.deltaCol})"
+
     def act(self, key):
         return ( Key( key.row + self.deltaRow, key.col + self.deltaCol ), -1 )
